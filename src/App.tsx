@@ -2,12 +2,11 @@ import { useEffect, useState, useRef } from "react";
 import type { KeyboardEvent, FormEvent } from "react";
 import "./App.css";
 import { io, Socket } from "socket.io-client";
-import CryptoJS from "crypto-js";
 import type { ChatMessage, User } from "./types";
-
+import { BLIP_SRC, SOCKET_URL, SOCKET_PATH } from "./utils/constants";
+import { encryptPassword, decryptPassword } from "./utils/crypto";
 
 let socket: Socket | null = null; // håller Socket.io-anslutningen (null innan man kopplar upp)
-
 
 // Huvudkomponenten för chatten – hanterar användare, meddelanden, tema och anslutning
 export default function App() {
@@ -21,38 +20,30 @@ export default function App() {
     localStorage.getItem("theme") || "light"
   );
   const chatRef = useRef<HTMLDivElement>(null);
-  const SECRET_KEY = "your-secret-key";
-
 
   // blip sound
   const blipSound = useRef<HTMLAudioElement>(
-    typeof Audio !== "undefined"
-      ? new Audio("/blip.wav")
-      : null
+    typeof Audio !== "undefined" ? new Audio(BLIP_SRC) : null
   );
 
+  // Hämtar och dekrypterar sparad användare från localStorage vid start
+  useEffect(() => {
+    const storedUser = localStorage.getItem("user"); // hämta sparad användare
+    if (storedUser) {
+      const parsed = JSON.parse(storedUser); // gör om till objekt
+      try {
+        const decryptedPassword = decryptPassword(parsed.password);
 
-
-// Hämtar och dekrypterar sparad användare från localStorage vid start
-useEffect(() => {
-  const storedUser = localStorage.getItem("user"); // hämta sparad användare
-  if (storedUser) {
-    const parsed = JSON.parse(storedUser); // gör om till objekt
-    try {
-      const bytes = CryptoJS.AES.decrypt(parsed.password, SECRET_KEY); // dekryptera lösen
-      const decryptedPassword = bytes.toString(CryptoJS.enc.Utf8);
-
-      setUser({
-        username: parsed.username,
-        password: decryptedPassword,
-      }); // sätt användaren som inloggad
-    } catch (err) {
-      console.error("Fel vid dekryptering:", err);
-      localStorage.removeItem("user"); // ta bort om fel uppstår
+        setUser({
+          username: parsed.username,
+          password: decryptedPassword,
+        }); // sätt användaren som inloggad
+      } catch (err) {
+        console.error("Fel vid dekryptering:", err);
+        localStorage.removeItem("user"); // ta bort om fel uppstår
+      }
     }
-  }
-}, []); // körs bara vid första laddningen
-
+  }, []); // körs bara vid första laddningen
 
   // Adda theme, hitta sparad theme.
   useEffect(() => {
@@ -60,12 +51,11 @@ useEffect(() => {
     localStorage.setItem("theme", theme);
   }, [theme]);
 
-
   useEffect(() => {
     if (!user) return;
 
     /*socket = io("wss://socket.chasqui.se");*/
-    socket = io("wss://api.leetcode.se", { path: "/fos25" });
+    socket = io(SOCKET_URL, { path: SOCKET_PATH });
 
     socket.on("connect", () => setConnected(true));
     socket.on("disconnect", () => setConnected(false));
@@ -100,7 +90,6 @@ useEffect(() => {
     }
   }, [messages]);
 
-
   // Send message function, Skicka, Adda medelande till din lcoal client, clear chat after.
   const sendMessage = () => {
     if (!socket || !currentMessage.trim()) return;
@@ -111,17 +100,14 @@ useEffect(() => {
     };
 
     socket.emit("chat_room", message);
-    setMessages((prev) => [...prev, message,]);
+    setMessages((prev) => [...prev, message]);
     setCurrentMessage("");
   };
 
-
-  // Tryck Enter Triggerar function 
+  // Tryck Enter Triggerar function
   const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") sendMessage();
   };
-
-
 
   // Login
 
@@ -129,7 +115,7 @@ useEffect(() => {
     e.preventDefault();
     if (!nickname.trim() || !password.trim()) return;
 
-    const encryptedPassword = CryptoJS.AES.encrypt(password, SECRET_KEY).toString();
+    const encryptedPassword = encryptPassword(password);
 
     const newUser: User = { username: nickname, password: encryptedPassword };
     localStorage.setItem("user", JSON.stringify(newUser));
@@ -172,7 +158,6 @@ useEffect(() => {
   // Chatui
   return (
     <main className="tg-app">
-
       <aside className="tg-sidebar">
         <header className="tg-side-header">
           <span>Chats</span>

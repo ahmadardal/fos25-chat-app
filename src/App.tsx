@@ -3,19 +3,8 @@ import type { KeyboardEvent, FormEvent } from "react";
 import "./App.css";
 import { io, Socket } from "socket.io-client";
 import CryptoJS from "crypto-js";
+import type { ChatMessage, User } from "./types";
 
-
-
-// Typer
-interface ChatMessage {
-  sender: string;   // avsändare
-  message: string;  // text
-}
-
-interface User {
-  username: string; // namn
-  password: string; // lösen
-}
 
 let socket: Socket | null = null; // håller Socket.io-anslutningen (null innan man kopplar upp)
 

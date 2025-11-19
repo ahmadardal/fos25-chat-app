@@ -22,6 +22,7 @@ export default function App() {
   );
   const chatRef = useRef<HTMLDivElement>(null);
   const blipRef = useRef<(() => void) | null>(null);
+  const [rooms, setRooms] = useState([]);
 
   useEffect(() => {
     blipRef.current = createBlipPlayer();
@@ -63,6 +64,10 @@ export default function App() {
 
     socket.on("connect", () => setConnected(true));
     socket.on("disconnect", () => setConnected(false));
+    socket.on("room_list", (serverRooms) => {
+      console.log("Här kommer all rum eller?",serverRooms)
+      setRooms(serverRooms);
+    });
 
     socket.on("chat_room", (data: ChatMessage | string) => {
       let parsed: ChatMessage;
@@ -86,6 +91,7 @@ export default function App() {
 
     return () => {
       socket?.disconnect();
+      socket?.off("room_list");
     };
   }, [user]);
 
@@ -138,6 +144,7 @@ export default function App() {
     socket?.disconnect();
   };
 
+  console.log("Mina rum just nu:", rooms);
   // Login Screen
   if (!user) {
     return (
@@ -193,6 +200,21 @@ export default function App() {
               <small>{connected ? "Online" : "Offline"}</small>
             </div>
           </button>
+          
+            {/* Din map-funktion */}
+            {rooms.map((r) => (
+              <button className="tg-chat-item tg-active" key={r.id}>
+            <img
+              src={`https://api.dicebear.com/9.x/thumbs/svg?seed=${user.username}`}
+              alt=""
+            />
+            <div className="tg-chat-info">
+              <strong>{r.name}</strong>
+              <small>{connected ? "Online" : "Offline"}</small>
+            </div>
+          </button>
+            ))}
+          
         </nav>
 
         <footer className="tg-side-footer">

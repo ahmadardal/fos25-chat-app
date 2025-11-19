@@ -3,8 +3,9 @@ import type { KeyboardEvent, FormEvent } from "react";
 import "./App.css";
 import { io, Socket } from "socket.io-client";
 import type { ChatMessage, User } from "./types";
-import { BLIP_SRC, SOCKET_URL, SOCKET_PATH } from "./utils/constants";
+import { SOCKET_URL, SOCKET_PATH } from "./utils/constants";
 import { encryptPassword, decryptPassword } from "./utils/crypto";
+import { createBlipPlayer } from "./utils/audio";
 
 let socket: Socket | null = null; // håller Socket.io-anslutningen (null innan man kopplar upp)
 
@@ -20,11 +21,14 @@ export default function App() {
     localStorage.getItem("theme") || "light"
   );
   const chatRef = useRef<HTMLDivElement>(null);
+  const blipRef = useRef<(() => void) | null>(null);
 
-  // blip sound
-  const blipSound = useRef<HTMLAudioElement>(
-    typeof Audio !== "undefined" ? new Audio(BLIP_SRC) : null
-  );
+  useEffect(() => {
+    blipRef.current = createBlipPlayer();
+    return () => {
+      blipRef.current = null;
+    };
+  }, []);
 
   // Hämtar och dekrypterar sparad användare från localStorage vid start
   useEffect(() => {
@@ -71,8 +75,13 @@ export default function App() {
       } else {
         parsed = data;
       }
+
       setMessages((prev: ChatMessage[]) => [...prev, parsed]);
-      blipSound.current?.play();
+
+      // Play blip for messages not sent by the current user
+      if (parsed.sender && parsed.sender !== user?.username) {
+        blipRef.current?.();
+      }
     });
 
     return () => {

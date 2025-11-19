@@ -7,6 +7,12 @@ import { SOCKET_URL, SOCKET_PATH } from "./utils/constants";
 import { encryptPassword, decryptPassword } from "./utils/crypto";
 import { createBlipPlayer } from "./utils/audio";
 
+type roomList = {
+  id: string
+  name: string
+}
+
+
 let socket: Socket | null = null; // håller Socket.io-anslutningen (null innan man kopplar upp)
 
 // Huvudkomponenten för chatten – hanterar användare, meddelanden, tema och anslutning
@@ -22,7 +28,7 @@ export default function App() {
   );
   const chatRef = useRef<HTMLDivElement>(null);
   const blipRef = useRef<(() => void) | null>(null);
-  const [rooms, setRooms] = useState([]);
+  const [rooms, setRooms] = useState<roomList[]>([]);
 
   useEffect(() => {
     blipRef.current = createBlipPlayer();

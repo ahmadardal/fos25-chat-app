@@ -254,3 +254,87 @@ p {
     transform: scale(1);
   }
 }
+
+.bubble-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.tg-bubble {
+  background: #0078ff;
+  padding: 10px 36px 10px 14px;
+  border-radius: 14px;
+  color: #fff;
+  max-width: 260px;
+  word-wrap: break-word;
+  font-size: 0.95rem;
+}
+
+.edit-input {
+  width: 100%;
+  padding: 4px 6px;
+  border-radius: 6px;
+  border: 1px solid #666;
+  background: #111;
+  color: #eee;
+  margin-bottom: 4px;
+}
+
+.save-btn,
+.cancel-btn {
+  padding: 4px 8px;
+  font-size: 0.7rem;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+}
+
+.edit-btn {
+  position: absolute;
+  bottom: 8px;
+  right: 10px;
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  padding: 2px;
+  cursor: pointer;
+  opacity: 0;
+  transition: 0.15s ease;
+}
+.edit-btn:hover {
+  opacity: 1;
+    background: transparent;
+}
+
+.bubble-wrapper:hover .edit-btn {
+  opacity: 1;
+}
+
+.edit-actions {
+  margin-top: 6px;
+  display: flex;
+  gap: 6px;
+  justify-content: flex-end;
+}
+
+.save-btn,
+.cancel-btn {
+  background: #fff;
+  border: none;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  cursor: pointer;
+}
+
+.save-btn {
+  color: #0a0;
+}
+
+.cancel-btn {
+  color: #d00;
+}
+.save-btn:hover,
+.cancel-btn:hover {
+  background: #c9c7c7;
+}

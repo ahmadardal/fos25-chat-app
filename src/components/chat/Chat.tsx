@@ -24,6 +24,9 @@ export default function Chat({ user, onLogout, theme, setTheme }: ChatProps) {
   const chatRef = useRef<HTMLDivElement>(null);
 
   const blipRef = useRef<(() => void) | null>(null);
+  const [editingId, setEditingId] = useState<string | null>(null);
+const [editText, setEditText] = useState("");
+
 
 useEffect(() => {
   blipRef.current = createBlipPlayer();
@@ -59,6 +62,15 @@ useEffect(() => {
   setMessages(prev => [...prev, parsed]);
 });
 
+socket.on("messageEdited", ({ id, newText }) => {
+  setMessages(prev =>
+    prev.map(msg =>
+      msg.id === id ? { ...msg, message: newText } : msg
+    )
+  );
+});
+
+
     return () => {
       socket?.disconnect();
     };
@@ -81,6 +93,7 @@ useEffect(() => {
     const msg: ChatMessage = {
       sender: user.username,
       message: text,
+      id: crypto.randomUUID()
     };
 
     // skicka till server
@@ -89,6 +102,21 @@ useEffect(() => {
     // lokal echo (identiskt med din gamla kod)
     setMessages(prev => [...prev, msg]);
   };
+  
+const saveEdit = (id: string) => {
+  if (!socket) return;
+
+  socket.emit("editMessage", { id, newText: editText });
+
+  // lokalt
+  setMessages(prev =>
+    prev.map(msg =>
+      msg.id === id ? { ...msg, message: editText } : msg
+    )
+  );
+
+  setEditingId(null);
+};
 
   return (
     <main className="tg-app">
@@ -104,8 +132,16 @@ useEffect(() => {
         <Header user={user} connected={connected} />
 
         {/* MESSAGES */}
-        <MessageList messages={messages} user={user} chatRef={chatRef} />
-
+<MessageList 
+  messages={messages} 
+  user={user} 
+  chatRef={chatRef} 
+  editingId={editingId}
+  editText={editText}
+  setEditingId={setEditingId}
+  setEditText={setEditText}
+  saveEdit={saveEdit}
+/>
         {/* COMPOSER */}
         <Composer onSend={sendMessage} />
       </section>

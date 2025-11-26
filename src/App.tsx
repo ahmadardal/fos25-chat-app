@@ -7,16 +7,17 @@ import { decryptPassword } from "./utils/crypto";
 import Login from "./components/auth/Login";
 import Chat from "./components/chat/Chat";
 
-
 export default function App() {
   const [user, setUser] = useState<User | null>(null);
   const [theme, setTheme] = useState(localStorage.getItem("theme") || "light");
+  const [color, setColor] = useState(localStorage.getItem("color") || "Blue");
 
-useEffect(() => {
-  document.body.dataset.theme = theme;
-  localStorage.setItem("theme", theme);
-}, [theme]);
-
+  useEffect(() => {
+    document.body.dataset.theme = theme;
+    document.body.dataset.color = color;
+    localStorage.setItem("theme", theme);
+    localStorage.setItem("color", color);
+  }, [theme, color]);
 
   // Hämta användare från localStorage
   useEffect(() => {
@@ -44,16 +45,15 @@ useEffect(() => {
 
   // Annars visa chatten
   return (
-  <Chat
-    user={user}
-    onLogout={() => {
-      localStorage.removeItem("user");
-      setUser(null);
-    }}
-    theme={theme}
-    setTheme={setTheme}
-  />
-);
-
-  
+    <Chat
+      user={user}
+      onLogout={() => {
+        localStorage.removeItem("user");
+        setUser(null);
+      }}
+      theme={theme}
+      setTheme={setTheme}
+      setColor={setColor}
+    />
+  );
 }

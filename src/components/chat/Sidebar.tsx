@@ -6,6 +6,8 @@ type Props = {
   onLogout: () => void;
   theme: string;
   setTheme: (theme: string) => void;
+  color: string;
+  setColor: (color: string) => void;
 };
 
 export default function Sidebar({
@@ -14,6 +16,8 @@ export default function Sidebar({
   onLogout,
   theme,
   setTheme,
+  color,
+  setColor,
 }: Props) {
   return (
     <aside className="tg-sidebar">

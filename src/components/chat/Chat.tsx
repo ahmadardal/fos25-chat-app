@@ -14,11 +14,13 @@ type ChatProps = {
   onLogout: () => void;
   theme: string;
   setTheme: (t: string) => void;
+  color: string;
+  setColor: (c: string) => void;
 };
 
 let socket: Socket | null = null;
 
-export default function Chat({ user, onLogout, theme, setTheme }: ChatProps) {
+export default function Chat({ user, onLogout, theme, setTheme, color, setColor}: ChatProps) {
   const [connected, setConnected] = useState(false);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const chatRef = useRef<HTMLDivElement>(null);
@@ -98,6 +100,8 @@ useEffect(() => {
         onLogout={onLogout}
         theme={theme}
         setTheme={setTheme}
+        color={color}
+        setColor={setColor}
       />
 
       <section className="tg-chat-area">

@@ -7,7 +7,7 @@ import Sidebar from "./Sidebar";
 import Header from "./Header";
 import { SOCKET_URL, SOCKET_PATH } from "../../utils/constants";
 import "../../App.css";
-import { createBlipPlayer } from "/src/utils/audio";
+import { createBlipPlayer } from "../../utils/audio";
 
 type ChatProps = {
   user: User;

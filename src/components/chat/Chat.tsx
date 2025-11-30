@@ -72,21 +72,23 @@ useEffect(() => {
     });
   }, [messages]);
 
-  // SKICKA MEDDELANDE (identisk med gamla appen)
-  const sendMessage = (text: string) => {
+  // SKICKA MEDDELANDE 
+  const sendMessage = (text: string, anonymous: boolean) => {
     console.log("SEND FROM CLIENT:", text, user.username);
 
     if (!socket || !text.trim()) return;
 
-    const msg: ChatMessage = {
-      sender: user.username,
-      message: text,
-    };
+  const msg: ChatMessage = {
+  sender: anonymous ? "Anonym" : user.username,
+  realSender: user.username,    
+  isAnon: anonymous,             
+  message: text,
+};
 
     // skicka till server
     socket.emit("chat_room", msg);
 
-    // lokal echo (identiskt med din gamla kod)
+    // lokal echo
     setMessages(prev => [...prev, msg]);
   };
 
@@ -108,6 +110,7 @@ useEffect(() => {
 
         {/* COMPOSER */}
         <Composer onSend={sendMessage} />
+
       </section>
     </main>
   );

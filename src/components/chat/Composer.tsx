@@ -1,16 +1,25 @@
 import { useState, KeyboardEvent } from "react";
+import Anonymous from "./Anonymous";
+
 
 type Props = {
-  onSend: (text: string) => void;
+  onSend: (text: string,
+      anonymous: boolean
+
+  ) => void
+  onChange: (value: boolean) => void
+
 };
 
 export default function Composer({ onSend }: Props) {
   const [text, setText] = useState("");
+    const [anonymous, setAnonymous] = useState(false)
+
 
   const handleSend = () => {
     if (!text.trim()) return;
-    onSend(text);
-    setText(""); // identiskt med gamla App.jsx
+    onSend(text, anonymous);
+    setText(""); 
   };
 
   const handleKey = (e: KeyboardEvent<HTMLInputElement>) => {
@@ -27,7 +36,15 @@ export default function Composer({ onSend }: Props) {
         onChange={(e) => setText(e.target.value)}
         onKeyDown={handleKey}
       />
-      <button onClick={handleSend}>Send</button>
+        <Anonymous onChange={(v) => setAnonymous(v)} />
+
+<button
+  type="button"
+  onClick={handleSend}
+  className={`send-btn ${anonymous ? "is-anon" : ""}`}
+>
+  {anonymous ? "Anonymous" : "Send"}
+</button>
     </div>
   );
 }

@@ -262,7 +262,7 @@ body[data-theme="dark"] .tg-chat-item.tg-active {
 .tg-composer {
   display: flex;
   align-items: center;
-  gap: 10px;
+  
   padding: 12px 20px;
   border-top: 1px solid var(--tg-sidebar-border);
   background: var(--tg-chat-bg);
@@ -284,21 +284,22 @@ body[data-theme="dark"] .tg-chat-item.tg-active {
   border-color: var(--tg-bubble-self);
 }
 
-.tg-composer button {
-  padding: 10px 16px;
-  border: none;
+/* .tg-composer button {
+  padding: 10px 18px;
+  height: 44px;
   border-radius: 20px;
-  background: var(--tg-bubble-self);
-  color: #fff;
-  font-weight: 600;
-  cursor: pointer;
-  transition: opacity 0.2s;
+  font-size: 1rem;
+  min-width: 120px;  
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+ 
 }
-
+ */
 .tg-composer button:hover {
   opacity: 0.85;
 }
-
 
 .tg-login {
   height: 100vh;

@@ -254,3 +254,55 @@ p {
     transform: scale(1);
   }
 }
+.anon-btn {
+  height: 44px;       /* samma som send-btn */
+  width: 44px;        /* gör den cirkulär */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: transparent !important;
+  font-size: 1.3rem;
+  cursor: pointer;
+  opacity: 0.7;
+  transition: 0.2s ease;
+  border: none;
+}
+
+.anon-btn:hover {
+  opacity: 1;
+}
+
+.anon-btn.active {
+  opacity: 1;
+  transform: scale(1.15);
+}
+
+
+.send-btn {
+  display: flex ;
+  flex-direction: column ;
+  justify-content: center ;
+  align-items: center ;
+
+  height: 44px ;        /* ← FIXAR bounce */
+  width: 120px ;         /* ← alltid samma bredd */
+  padding: 0 ;           /* ← slår ut global button padding */
+  margin: 0 ;
+
+  border-radius: 20px;
+  background: #2a9df4;            /* vanliga send-färgen */
+  color: white;
+  font-size: 1.1rem ;
+  line-height: 1.1;
+  text-align: center;
+
+  box-sizing: border-box ;
+}
+
+
+/* anonym  */
+.send-btn.is-anon {
+  background: #8c55ff ;
+  font-size: 1rem;
+}

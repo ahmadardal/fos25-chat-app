@@ -93,7 +93,7 @@ useEffect(() => {
   };
 
   return (
-    <main className="tg-app">
+    <main className="flex h-[100vh] w-[100vw] bg-[var(--tg-bg)] text-[var(--tg-text)]">
       <Sidebar
         user={user}
         connected={connected}
@@ -104,7 +104,7 @@ useEffect(() => {
         setColor={setColor}
       />
 
-      <section className="tg-chat-area">
+      <section className="flex-1 flex flex-col bg-[var(--tg-chat-bg)]">
         <Header user={user} connected={connected} />
 
         {/* MESSAGES */}

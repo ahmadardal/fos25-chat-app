@@ -9,16 +9,13 @@ type Props = {
 
 export default function MessageList({ messages, user, chatRef }: Props) {
   return (
-    <div className="tg-messages" ref={chatRef}>
+    <div
+      className="flex-1 overflow-y-auto p-[20px] flex flex-col gap-[10px] scroll-smooth bg-[url(./assets/pattern-1.svg)]"
+      ref={chatRef}
+    >
       {messages.map((msg, i) => {
         const isSelf = msg.sender === user.username;
-        return (
-          <MessageBubble
-            key={i}
-            msg={msg}
-            isSelf={isSelf}
-          />
-        );
+        return <MessageBubble key={i} msg={msg} isSelf={isSelf} />;
       })}
     </div>
   );

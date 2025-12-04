@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import "./App.css";
 
 import type { User } from "./types";
 import { decryptPassword } from "./utils/crypto";

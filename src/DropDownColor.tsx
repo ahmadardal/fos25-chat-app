@@ -1,188 +1,72 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import bgColorMap from "../backgroundColorMap";
+import { useTheme } from '../ThemeContext';
 
 const DropDownColor = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [theme, setTheme] = useState("light");
-  const [color, setColor] = useState("Blue");
-  const colors = ["Red", "Blue", "Green", "Yellow", "Purple"];
+  const { theme, accent, updateTheme } = useTheme();
 
-  const [bg, setBg] = useState<string>("");
-  const [sidebarBg, setSidebarBg] = useState<string>("");
-  const [sidebarBorder, setsidebarBorder] = useState<string>("");
-  const [chatBg, setchatBg] = useState<string>("");
-  const [text, settext] = useState<string>("");
-  const [inputBg, setinputBg] = useState<string>("");
-  const [inputBorder, setinputBorder] = useState<string>("");
-  const [bubbleSelf, setbubbleSelf] = useState<string>("");
-  const [bubbleSelfText, setbubbleSelfText] = useState<string>("");
-  const [bubbleOther, setbubbleOther] = useState<string>("");
-  const [bubbleOtherText, setbubbleOtherText] = useState<string>("");
-
-  const colorsMap: {
-    [theme: string]: {
-      [accent: string]: {
-        bg: string;
-        sidebarBg: string;
-        sidebarBorder: string;
-        chatBg: string;
-        text: string;
-        inputBg: string;
-        inputBorder: string;
-        bubbleSelf: string;
-        bubbleSelfText: string;
-        bubbleOther: string;
-        bubbleOtherText: string;
-      };
-    };
-  } = {
-    Light: {
-      Red: {
-        bg: "#ffffff",
-        sidebarBg: "#f7f7f7",
-        sidebarBorder: "#ddd",
-        chatBg: "#ffffff",
-        text: "#000000",
-        inputBg: "#f3f3f3",
-        inputBorder: "#ddd",
-        bubbleSelf: "#ff4d4f",
-        bubbleSelfText: "#ffffff",
-        bubbleOther: "#f0f0f0",
-        bubbleOtherText: "#000000",
-      },
-      Blue: {
-        bg: "#ffffff",
-        sidebarBg: "#f7f7f7",
-        sidebarBorder: "#ddd",
-        chatBg: "#ffffff",
-        text: "#000000",
-        inputBg: "#f3f3f3",
-        inputBorder: "#ddd",
-        bubbleSelf: "#0078ff",
-        bubbleSelfText: "#ffffff",
-        bubbleOther: "#f0f0f0",
-        bubbleOtherText: "#000000",
-      },
-    },
-    Dark: {
-      Red: {
-        bg: "#1a1a1a",
-        sidebarBg: "#222222",
-        sidebarBorder: "#333333",
-        chatBg: "#1c1c1c",
-        text: "#f5f5f5",
-        inputBg: "#2a2a2a",
-        inputBorder: "#444444",
-        bubbleSelf: "#ff4d4f",
-        bubbleSelfText: "#ffffff",
-        bubbleOther: "#2f2f2f",
-        bubbleOtherText: "#ffffff",
-      },
-      Blue: {
-        bg: "#1a1a1a",
-        sidebarBg: "#222222",
-        sidebarBorder: "#333333",
-        chatBg: "#1c1c1c",
-        text: "#f5f5f5",
-        inputBg: "#2a2a2a",
-        inputBorder: "#444444",
-        bubbleSelf: "#0078ff",
-        bubbleSelfText: "#ffffff",
-        bubbleOther: "#2f2f2f",
-        bubbleOtherText: "#ffffff",
-      },
-    },
-  };
-
-  export default function ChatTheme() {
-    const [colorAccents, setColorAccents] = useState({
-      "bg-color": "#ffffff",
-      "bg-sidebar": "#f7f7f7",
-      "bg-chat": "#ffffff",
-      "text-color": "#000000",
-      "bg-input": "#f3f3f3",
-      "border-input": "#ddd",
-      "bg-bubble-self": "#0078ff",
-      "text-bubble-self": "#ffffff",
-      "bubble-other": "#f0f0f0",
-      "text-bubble-other": "#000000",
-    });
-
-    const updateTheme = (theme: string, accent: string) => {
-      const selected = colorsMap[theme][accent];
-      setColorAccents({
-        "bg-color": selected.bg,
-        "bg-sidebar": selected.sidebarBg,
-        "bg-chat": selected.chatBg,
-        "text-color": selected.text,
-        "bg-input": selected.inputBg,
-        "border-input": selected.inputBorder,
-        "bg-bubble-self": selected.bubbleSelf,
-        "text-bubble-self": selected.bubbleSelfText,
-        "bubble-other": selected.bubbleOther,
-        "text-bubble-other": selected.bubbleOtherText,
-      });
-    };
-
-    return (
-      <div className={colorAccents["bg-color"]}>
-        <h1 className={colorAccents["text-color"]}>Hello Chat</h1>
-        <button onClick={() => updateTheme("Dark", "Blue")}>Dark Blue</button>
-        <button onClick={() => updateTheme("Light", "Red")}>Light Red</button>
-      </div>
-    );
-  }
+  useEffect(() => {
+    updateTheme(theme,accent)
+  })
 
   return (
-    <div>
-      <button onClick={() => setIsOpen(!isOpen)}> 🎨 </button>
+    <div className="bg-transparent p-4">
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className="text-2xl cursor-pointer 
+        transition-transform duration-200 
+        hover:scale-110"
+      >
+        🎨
+      </button>
+
+
+
       {isOpen && (
-        <div>
-          <ul>
-            <li>
-              <button onClick={() => setTheme("dark")}>
-                <p>🌙 Dark Theme</p>
+        <div className={`mt-2 fixed z-50 rounded-lg shadow-lg ${bgColorMap[theme][accent].sidebarBg} ${bgColorMap[theme][accent].sidebarBorder}`}>
+          <ul className="p-2">
+            {theme === "Dark" ? (
+              <button
+                onClick={() => {
+                  updateTheme("Light", accent);
+                }}
+                className={`cursor-pointer w-full px-4 py-2 text-left ${bgColorMap[theme][accent].text} hover:bg-gray-700 rounded transition-colors duration-150`}
+              >
+                ☀️ Light Theme
               </button>
-            </li>
-            <li>
-              <button onClick={() => setTheme("light")}>
-                <p>☀️ Light Theme</p>
+            ) : (
+              <button
+                onClick={() => {
+                  updateTheme("Dark", accent);
+                }}
+                className={`cursor-pointer w-full px-4 py-2 text-left ${bgColorMap[theme][accent].text} hover:bg-gray-200 rounded transition-colors duration-150`}
+              >
+                🌙 Dark Theme
               </button>
-            </li>
+            )}
           </ul>
-          {theme === "light" ? (
-            <ul className="absolute">
-              {colors.map((color: string) => (
-                <li>
-                  <button
-                    onClick={() => {
-                      setIsOpen(false);
-                      setColor(color);
+
+          <ul className={`border-t p-2 flex flex-col ${bgColorMap[theme][accent].sidebarBorder}`}>
+            {Object.keys(bgColorMap[theme]).map((value) => (
+              <li key={value}>
+                <button
+                  className={`cursor-pointer w-full px-4 py-2 text-left ${bgColorMap[theme][accent].text} hover:bg-gray-200 rounded transition-colors duration-150 flex justify-between items-center`}
+                  onClick={() => {
+                    updateTheme(theme, value as "Red" | "Blue" | "Green" | "Yellow" | "Purple");
+                    setIsOpen(false);
                     }}
-                  >
-                    {color}
-                  </button>
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <ul className="absolute">
-              {colors.map((color: string) => (
-                <li>
-                  <button
-                    onClick={() => {
-                      setColor(color);
-                      setIsOpen(false);
-                    }}
-                  >
-                    {color}
-                  </button>
-                </li>
-              ))}
-            </ul>
-          )}
+                >
+                  {value}
+                  <div className={`w-4 h-4 rounded-full ${bgColorMap[theme][value as "Red" | "Blue" | "Green" | "Yellow" | "Purple"].bubbleSelf}`} />
+                </button>
+              </li>
+            ))}
+          </ul>
         </div>
       )}
     </div>
   );
 };
+
 export default DropDownColor;

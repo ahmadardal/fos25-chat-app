@@ -1,4 +1,5 @@
 import type { User } from "../../types";
+import { useTheme } from '../../../ThemeContext';
 
 type Props = {
   user: User;
@@ -6,11 +7,12 @@ type Props = {
 };
 
 export default function Header({ user, connected }: Props) {
+  const { colorAccents: colors } = useTheme();
   return (
-    <header className="p-[16px] border-b-1 border-solid flex items-center border-[var(--tg-sidebar-border)] ">
+    <header className={`p-4 border-b border-solid ${colors.sidebarBorder} flex items-center`}>
       <div className="flex items-center gap-[10px]">
         <img
-          className="w-[42px] h-[42px] rounded-[50%]"
+          className="w-[42px] h-[42px] rounded-full"
           src={`https://api.dicebear.com/9.x/thumbs/svg?seed=${user.username}`}
           alt=""
         />

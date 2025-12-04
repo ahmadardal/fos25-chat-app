@@ -5,9 +5,9 @@ import MessageList from "./MessageList";
 import Composer from "./Composer";
 import Sidebar from "./Sidebar";
 import Header from "./Header";
+import { useTheme } from '../../../ThemeContext';
 import { SOCKET_URL, SOCKET_PATH } from "../../utils/constants";
-import "../../App.css";
-import { createBlipPlayer } from "/src/utils/audio";
+import { createBlipPlayer } from "../../utils/audio.ts";
 
 type ChatProps = {
   user: User;
@@ -21,6 +21,7 @@ type ChatProps = {
 let socket: Socket | null = null;
 
 export default function Chat({ user, onLogout, theme, setTheme, color, setColor}: ChatProps) {
+  const { colorAccents: colors } = useTheme();
   const [connected, setConnected] = useState(false);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const chatRef = useRef<HTMLDivElement>(null);
@@ -93,7 +94,7 @@ useEffect(() => {
   };
 
   return (
-    <main className="flex h-[100vh] w-[100vw] bg-[var(--tg-bg)] text-[var(--tg-text)]">
+    <main className={`flex h-screen w-screen ${colors.bg} ${colors.text}`}>
       <Sidebar
         user={user}
         connected={connected}
@@ -104,7 +105,7 @@ useEffect(() => {
         setColor={setColor}
       />
 
-      <section className="flex-1 flex flex-col bg-[var(--tg-chat-bg)]">
+      <section className={`flex-1 flex flex-col ${colors.chatBg}`}>
         <Header user={user} connected={connected} />
 
         {/* MESSAGES */}

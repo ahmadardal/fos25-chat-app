@@ -4,7 +4,7 @@ import type { ChatMessage, User } from "../../types";
 type Props = {
   messages: ChatMessage[];
   user: User;
-  chatRef: React.RefObject<HTMLDivElement>;
+  chatRef: React.RefObject<HTMLDivElement | null>;
 };
 
 export default function MessageList({ messages, user, chatRef }: Props) {

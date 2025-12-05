@@ -7,7 +7,7 @@ import Sidebar from "./Sidebar";
 import Header from "./Header";
 import { SOCKET_URL, SOCKET_PATH } from "../../utils/constants";
 import "../../App.css";
-import { createBlipPlayer } from "/src/utils/audio";
+import { createBlipPlayer } from "../../utils/audio";
 
 type ChatProps = {
   user: User;
@@ -21,43 +21,44 @@ let socket: Socket | null = null;
 export default function Chat({ user, onLogout, theme, setTheme }: ChatProps) {
   const [connected, setConnected] = useState(false);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
-  const chatRef = useRef<HTMLDivElement>(null);
+  const chatRef = useRef<HTMLDivElement | null>(null);
 
   const blipRef = useRef<(() => void) | null>(null);
 
-useEffect(() => {
-  blipRef.current = createBlipPlayer();
-  return () => {
-    blipRef.current = null;
-  };
-}, []);
-
+  useEffect(() => {
+    blipRef.current = createBlipPlayer();
+    return () => {
+      blipRef.current = null;
+    };
+  }, []);
 
   // Initiera socket
   useEffect(() => {
     socket = io(SOCKET_URL, { path: SOCKET_PATH });
 
-    socket.on("connect", () => setConnected(true));
+    socket.on("connect", () => {
+      setConnected(true);
+    });
     socket.on("disconnect", () => setConnected(false));
 
     // MOTTAG MEDDELANDEN
- socket.on("chat_room", (msg: ChatMessage | string) => {
-  console.log("RECEIVED FROM SERVER:", msg);
+    socket.on("chat_room", (msg: ChatMessage | string) => {
+      console.log("RECEIVED FROM SERVER:", msg);
 
-  let parsed: ChatMessage;
+      let parsed: ChatMessage;
 
-  if (typeof msg === "string") {
-    parsed = { sender: "Unknown", message: msg };
-  } else {
-    parsed = msg;
-  }
+      if (typeof msg === "string") {
+        parsed = { sender: "Unknown", message: msg };
+      } else {
+        parsed = msg;
+      }
 
-  if (parsed.sender !== user.username) {
-    blipRef.current?.();
-  }
+      if (parsed.sender !== user.username) {
+        blipRef.current?.();
+      }
 
-  setMessages(prev => [...prev, parsed]);
-});
+      setMessages((prev) => [...prev, parsed]);
+    });
 
     return () => {
       socket?.disconnect();
@@ -74,7 +75,7 @@ useEffect(() => {
 
   // SKICKA MEDDELANDE (identisk med gamla appen)
   const sendMessage = (text: string) => {
-    console.log("SEND FROM CLIENT:", text, user.username);
+    console.log("SENT FROM CLIENT:", text, user.username);
 
     if (!socket || !text.trim()) return;
 
@@ -87,7 +88,7 @@ useEffect(() => {
     socket.emit("chat_room", msg);
 
     // lokal echo (identiskt med din gamla kod)
-    setMessages(prev => [...prev, msg]);
+    setMessages((prev) => [...prev, msg]);
   };
 
   return (
